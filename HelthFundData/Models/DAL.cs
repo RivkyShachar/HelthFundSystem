@@ -160,8 +160,8 @@ namespace HelthFundData.Models
         public Response<Vaccine> AddVaccine(SqlConnection sqlConnection, Vaccine vaccine)
         {
             Response<Vaccine> Response = new Response<Vaccine>();
-            SqlCommand cmd = new SqlCommand("INSERT INTO  VACCINES(Id, MemberId, VaccineDate, VaccineManufacturer) " + 
-                "VALUES(" + vaccine.Id + ", " + vaccine.MemberId + ", '" + vaccine.VaccineDate + "', '" + vaccine.VaccineManufacturer + "')", sqlConnection);
+            SqlCommand cmd = new SqlCommand("SET IDENTITY_INSERT Vaccines ON; INSERT INTO  VACCINES(Id, MemberId, VaccineDate, VaccineManufacturer) " + 
+                "VALUES(" + vaccine.Id + ", " + vaccine.MemberId + ", '" + vaccine.VaccineDate + "', '" + vaccine.VaccineManufacturer + "'); SET IDENTITY_INSERT Vaccines OFF;", sqlConnection);
             sqlConnection.Open();
             int i = cmd.ExecuteNonQuery();
             sqlConnection.Close();
