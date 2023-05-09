@@ -16,6 +16,9 @@ namespace HelthFundData.DbContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Member>().ToTable("Members");
+            modelBuilder.Entity<Vaccine>().ToTable("Vaccines");
+            modelBuilder.Entity<Recovery>().ToTable("Recovery");
             base.OnModelCreating(modelBuilder);
         }
     }
