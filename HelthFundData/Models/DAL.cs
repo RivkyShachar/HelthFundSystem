@@ -80,6 +80,10 @@ namespace HelthFundData.Models
 
         public Response<Member> AddMember(SqlConnection sqlConnection, Member member)
         {
+            if (member.ImageUrl == null)
+            {
+                member.ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7RbuAj7zoRZSIDcV_nz2LyZZjwiOETmn7kg&usqp=CAU";
+            }
             Response<Member> memberResponse = new Response<Member>();
             SqlCommand cmd = new SqlCommand("INSERT INTO  MEMBERS(Id, FirstName, LastName, Address, PhoneNumber, MobileNumber, BirthDate, ImageUrl) " + "VALUES(" + member.Id + ", '" + member.FirstName + "', '" + member.LastName + "', '" + member.Address + "', '" + member.PhoneNumber +
                 "', '" + member.MobileNumber + "', '" + member.BirthDate + "', '" + member.ImageUrl + "')", sqlConnection);
