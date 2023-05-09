@@ -23,7 +23,7 @@ namespace HelthFundAPI.Controllers
         [Route("GetAllMembers")]
         public MemberResponse GetAllMembers()
         {
-            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("CoronaData").ToString());
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             MemberResponse memberResponse = new MemberResponse();
             DAL dal= new DAL();
             memberResponse = dal.GetAllMembers(sqlConnection);
