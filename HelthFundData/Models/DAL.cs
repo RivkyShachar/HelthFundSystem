@@ -78,5 +78,26 @@ namespace HelthFundData.Models
             return memberResponse;
         }
 
+        public MemberResponse AddMember(SqlConnection sqlConnection, Member member)
+        {
+            MemberResponse memberResponse = new MemberResponse();
+            SqlCommand cmd = new SqlCommand("INSERT INTO  MEMBERS(Id, FirstName, LastName, Address, PhoneNumber, MobileNumber, BirthDate, ImageUrl) " + "VALUES(" + member.Id + ", '" + member.FirstName + "', '" + member.LastName + "', '" + member.Address + "', '" + member.PhoneNumber +
+                "', '" + member.MobileNumber + "', '" + member.BirthDate + "', '" + member.ImageUrl + "')", sqlConnection);
+            sqlConnection.Open();
+            int i = cmd.ExecuteNonQuery();
+            sqlConnection.Close();
+            if (i > 0)
+            {
+                memberResponse.StatusCode = 200;
+                memberResponse.StatusMessage = "Member added";
+            }
+            else
+            {
+                memberResponse.StatusCode = 100;
+                memberResponse.StatusMessage = "No data inserted";;
+            }
+            return memberResponse;
+        }
+
     }
 }

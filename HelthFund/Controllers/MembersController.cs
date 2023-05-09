@@ -42,5 +42,17 @@ namespace HelthFundAPI.Controllers
             return memberResponse;
         }
 
+        // POST api/Members/AddMember/{id}
+        [HttpPost]
+        [Route("AddMember")]
+        public MemberResponse AddMember(Member member)
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
+            MemberResponse memberResponse = new MemberResponse();
+            DAL dal = new DAL();
+            memberResponse = dal.AddMember(sqlConnection, member);
+            return memberResponse;
+        }
+
     }
 }
