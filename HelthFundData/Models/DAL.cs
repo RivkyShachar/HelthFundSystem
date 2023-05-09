@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Azure;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -164,6 +165,18 @@ namespace HelthFundData.Models
         public Response<Vaccine> AddVaccine(SqlConnection sqlConnection, Vaccine vaccine)
         {
             Response<Vaccine> Response = new Response<Vaccine>();
+
+            // Check the number of vaccines associated with the member
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM VACCINES WHERE MemberId = " + vaccine.MemberId, sqlConnection);
+            DataTable dt = new DataTable();
+            dataAdapter.Fill(dt);
+
+            if (dt.Rows.Count >= 4)
+            {
+                Response.StatusCode = 300;
+                Response.StatusMessage = "Maximum number of vaccines reached for the member";
+                return Response;
+            }
             SqlCommand cmd = new SqlCommand("SET IDENTITY_INSERT Vaccines ON; INSERT INTO  VACCINES(Id, MemberId, VaccineDate, VaccineManufacturer) " + 
                 "VALUES(" + vaccine.Id + ", " + vaccine.MemberId + ", '" + vaccine.VaccineDate + "', '" + vaccine.VaccineManufacturer + "'); SET IDENTITY_INSERT Vaccines OFF;", sqlConnection);
             sqlConnection.Open();
