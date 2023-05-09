@@ -51,6 +51,31 @@ namespace HelthFundMVC.Controllers
             return View();
         }
 
+        public async Task<IActionResult> GetMemberByIdGet(int id)
+        {
+            Member member = new Member();
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(baseURL);
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await httpClient.GetAsync("/api/Members/GetMemberById/"+ id);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    String results = await response.Content.ReadAsStringAsync();
+                    var json = JObject.Parse(results);
+                    var memberGet = json["single"].ToObject<Member>();
+                    member = memberGet ?? new Member();
+                }
+                else
+                {
+                    Console.WriteLine("Error calling web API");
+                }
+                ViewData.Model = member;
+            }
+            return View();
+        }
         public IActionResult AddMemberGet()
         {
             return View();

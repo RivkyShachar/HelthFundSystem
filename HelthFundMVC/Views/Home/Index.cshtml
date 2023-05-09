@@ -1,8 +1,38 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <h1>Health Fund</h1>
+
+    <div class="form-group">
+        <label for="clientId">Client ID:</label>
+        <input type="number" id="clientId" class="form-control" placeholder="Enter Client ID (3 digits)">
+        <small class="text-danger" id="clientIdError" style="display: none;">Please enter a valid Client ID.</small>
+    </div>
+
+    <button id="findClientBtn" class="btn btn-primary">Find Client</button>
+    <a href="@Url.Action("CoronaInformation", "Home")" class="btn btn-primary">Corona Information</a>
+    <a href="@Url.Action("GetAllMembersGet", "Members")" class="btn btn-primary">View All Clients</a>
 </div>
+
+
+@section scripts {
+    <script>
+        // JavaScript code for handling button click events and form validation
+        document.getElementById('findClientBtn').addEventListener('click', function () {
+            var clientId = parseInt(document.getElementById('clientId').value);
+
+            if (!isNaN(clientId) && clientId.toString().length === 3) {
+                // Valid client ID, navigate to the CoronaInformation action with the client ID as a parameter
+                window.location.href = '@Url.Action("GetMemberByIdGet", "Members")' + '?id=' + clientId;
+            } else {
+                // Invalid client ID, show error message
+                document.getElementById('clientIdError').style.display = 'block';
+            }
+        });
+
+    </script>
+}
+
+
+
