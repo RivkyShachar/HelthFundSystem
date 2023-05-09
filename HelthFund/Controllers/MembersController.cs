@@ -18,7 +18,7 @@ namespace HelthFundAPI.Controllers
             _configuration = configuration;
         }
 
-        // GET api/members
+        // GET api/Members/GetAllMembers
         [HttpGet]
         [Route("GetAllMembers")]
         public MemberResponse GetAllMembers()
@@ -29,6 +29,18 @@ namespace HelthFundAPI.Controllers
             memberResponse = dal.GetAllMembers(sqlConnection);
             return memberResponse;
         }
-        
+
+        // GET api/Members/GetMemberById/{id}
+        [HttpGet]
+        [Route("GetMemberById/{id}")]
+        public MemberResponse GetMemberById(int id)
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
+            MemberResponse memberResponse = new MemberResponse();
+            DAL dal = new DAL();
+            memberResponse = dal.GetMemberById(sqlConnection, id);
+            return memberResponse;
+        }
+
     }
 }

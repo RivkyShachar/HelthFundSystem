@@ -47,5 +47,36 @@ namespace HelthFundData.Models
             }
             return memberResponse; 
         }
-    } 
+
+        public MemberResponse GetMemberById(SqlConnection sqlConnection, int id)
+        {
+            MemberResponse memberResponse = new MemberResponse();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS WHERE ID = "+id, sqlConnection);
+            DataTable dt = new DataTable();
+            dataAdapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                Member member = new Member();
+                member.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
+                member.FirstName = Convert.ToString(dt.Rows[0]["FirstName"]);
+                member.LastName = Convert.ToString(dt.Rows[0]["LastName"]);
+                member.Address = Convert.ToString(dt.Rows[0]["Address"]);
+                member.PhoneNumber = Convert.ToString(dt.Rows[0]["PhoneNumber"]);
+                member.MobileNumber = Convert.ToString(dt.Rows[0]["MobileNumber"]);
+                member.BirthDate = Convert.ToDateTime(dt.Rows[0]["BirthDate"]);
+                member.ImageUrl = Convert.ToString(dt.Rows[0]["ImageUrl"]);
+                memberResponse.StatusCode = 200;
+                memberResponse.StatusMessage = "Data found";
+                memberResponse.Member = member;
+            }
+            else
+            {
+                memberResponse.StatusCode = 100;
+                memberResponse.StatusMessage = "Data not found";
+                memberResponse.Member = null;
+            }
+            return memberResponse;
+        }
+
+    }
 }
