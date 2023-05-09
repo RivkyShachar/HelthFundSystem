@@ -156,5 +156,46 @@ namespace HelthFundData.Models
             }
             return Response;
         }
+
+        public Response<Vaccine> AddVaccine(SqlConnection sqlConnection, Vaccine vaccine)
+        {
+            Response<Vaccine> Response = new Response<Vaccine>();
+            SqlCommand cmd = new SqlCommand("INSERT INTO  VACCINES(Id, MemberId, VaccineDate, VaccineManufacturer) " + 
+                "VALUES(" + vaccine.Id + ", " + vaccine.MemberId + ", '" + vaccine.VaccineDate + "', '" + vaccine.VaccineManufacturer + "')", sqlConnection);
+            sqlConnection.Open();
+            int i = cmd.ExecuteNonQuery();
+            sqlConnection.Close();
+            if (i > 0)
+            {
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Vaccine added";
+            }
+            else
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No data inserted"; ;
+            }
+            return Response;
+        }
+
+        public Response<Recovery> AddRecovery(SqlConnection sqlConnection, Recovery recovery)
+        {
+            Response<Recovery> Response = new Response<Recovery>();
+            SqlCommand cmd = new SqlCommand("INSERT INTO  RECOVERY(Id, PositiveDate, RecoveryDate) " + "VALUES(" + recovery.Id + ", '" + recovery.PositiveDate + "', '" + recovery.RecoveryDate + "')", sqlConnection);
+            sqlConnection.Open();
+            int i = cmd.ExecuteNonQuery();
+            sqlConnection.Close();
+            if (i > 0)
+            {
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Recovery added";
+            }
+            else
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No data inserted"; ;
+            }
+            return Response;
+        }
     }
 }
