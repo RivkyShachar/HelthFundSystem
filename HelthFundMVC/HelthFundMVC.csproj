@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HelthFundData\HelthFundData.csproj" />
+    <ProjectReference Include="..\HelthFund\HelthFundAPI.csproj" />
+  </ItemGroup>
+
 </Project>
