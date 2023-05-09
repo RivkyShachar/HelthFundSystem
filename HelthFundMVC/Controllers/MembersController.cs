@@ -39,7 +39,7 @@ namespace HelthFundMVC.Controllers
                 {
                     String results = await response.Content.ReadAsStringAsync();
                     var json = JObject.Parse(results);
-                    var memberList = json["memberList"].ToObject<List<Member>>();
+                    var memberList = json["singleList"].ToObject<List<Member>>();
                     members = memberList ?? new List<Member>();
                 }
                 else
