@@ -54,5 +54,29 @@ namespace HelthFundAPI.Controllers
             return memberResponse;
         }
 
+        // GET api/Members/GetRecoveryById/{id}
+        [HttpGet]
+        [Route("GetRecoveryById/{id}")]
+        public Response<Recovery> GetRecoveryById(int id)
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
+            Response<Recovery> Response = new Response<Recovery>();
+            DAL dal = new DAL();
+            Response = dal.GetRecoveryById(sqlConnection, id);
+            return Response;
+        }
+
+        // GET api/Members/GetVaccinesById/{id}
+        [HttpGet]
+        [Route("GetVaccinesById/{id}")]
+        public Response<Vaccine> GetVaccinesById(int id)
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
+            Response<Vaccine> Response = new Response<Vaccine>();
+            DAL dal = new DAL();
+            Response = dal.GetVaccinesById(sqlConnection, id);
+            return Response;
+        }
+
     }
 }
