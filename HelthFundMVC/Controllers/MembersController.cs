@@ -7,132 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using HelthFundMVC.Models;
 using HelthFundData.Models;
+using Azure;
+using System.Text.Json;
+using System.Data;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json.Linq;
 
 namespace HelthFundMVC.Controllers
 {
     public class MembersController : Controller
     {
-        private readonly HttpClient _httpClient;
+        private readonly ILogger<MembersController> _logger;
 
-        public MembersController()
+        string baseURL = "http://localhost:5227";
+        public MembersController(ILogger<MembersController> logger)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5000/api/members"); // API base URL
+            _logger = logger;
         }
 
-        // GET: Members
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> GetAllMembers()
         {
-            var response = await _httpClient.GetAsync("");
-            response.EnsureSuccessStatusCode();
-
-            var membersJson = await response.Content.ReadAsStringAsync();
-            var members = JsonConvert.DeserializeObject<IEnumerable<Member>>(membersJson);
-
-            return View(members);
-        }
-
-        // GET: Members/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            var response = await _httpClient.GetAsync($"{id}");
-            if (response.IsSuccessStatusCode)
+            List<Member> members= new List<Member>();
+            using (var httpClient = new HttpClient())
             {
-                var memberJson = await response.Content.ReadAsStringAsync();
-                var member = JsonConvert.DeserializeObject<Member>(memberJson);
-                return View(member);
+                httpClient.BaseAddress = new Uri(baseURL);
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await httpClient.GetAsync("/api/Members/GetAllMembers");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    String results = await response.Content.ReadAsStringAsync();
+                    var json = JObject.Parse(results);
+                    var memberList = json["memberList"].ToObject<List<Member>>();
+                    members = memberList ?? new List<Member>();
+                }
+                else
+                {
+                    Console.WriteLine("Error calling web API");
+                }
+                ViewData.Model= members;
             }
-
-            return NotFound();
-        }
-
-        // GET: Members/Create
-        public IActionResult Create()
-        {
             return View();
         }
+        
 
-        // POST: Members/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Member member)
-        {
-            if (ModelState.IsValid)
-            {
-                var memberJson = JsonConvert.SerializeObject(member);
-                var content = new StringContent(memberJson, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync("", content);
-                response.EnsureSuccessStatusCode();
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(member);
-        }
-
-        // GET: Members/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            var response = await _httpClient.GetAsync($"{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                var memberJson = await response.Content.ReadAsStringAsync();
-                var member = JsonConvert.DeserializeObject<Member>(memberJson);
-                return View(member);
-            }
-
-            return NotFound();
-        }
-
-        // POST: Members/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Member member)
-        {
-            if (id != member.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                var memberJson = JsonConvert.SerializeObject(member);
-                var content = new StringContent(memberJson, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PutAsync($"{id}", content);
-                response.EnsureSuccessStatusCode();
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(member);
-        }
-
-        // GET: Members/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var response = await _httpClient.GetAsync($"{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                var memberJson = await response.Content.ReadAsStringAsync();
-                var member = JsonConvert.DeserializeObject<Member>(memberJson);
-                return View(member);
-            }
-
-            return NotFound();
-        }
-
-        // POST: Members/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var response = await _httpClient.DeleteAsync($"{id}");
-            response.EnsureSuccessStatusCode();
-
-            return RedirectToAction(nameof(Index));
-        }
     }
 }
 
