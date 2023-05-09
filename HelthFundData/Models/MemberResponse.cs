@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace HelthFundData.Models
 {
-    internal class Response
+    public class MemberResponse
     {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public Member Member { get; set; }
+        public List<Member> MemberList { get; set;}
+
     }
 }

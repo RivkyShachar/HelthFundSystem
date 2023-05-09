@@ -2,6 +2,8 @@
 using HelthFundData.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace HelthFundAPI.Controllers
 {
@@ -9,15 +11,24 @@ namespace HelthFundAPI.Controllers
     [ApiController]
     public class MembersController : ControllerBase
     {
-        private readonly MemberRepository _memberRepository;
+        private readonly IConfiguration _configuration;
 
-        public MembersController(MemberRepository memberRepository)
+        public MembersController(IConfiguration configuration)
         {
-            _memberRepository = memberRepository;
+            _configuration = configuration;
         }
 
         // GET api/members
         [HttpGet]
+        [Route("GetAllMembers")]
+        public MemberResponse GetAllMembers()
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("CoronaData").ToString());
+            MemberResponse memberResponse = new MemberResponse();
+            DAL dal= new DAL();
+            memberResponse = dal.GetAllMembers(sqlConnection);
+            return memberResponse;
+        }
         public ActionResult<IEnumerable<Member>> GetMembers()
         {
             var members = _memberRepository.GetAllMembers();
