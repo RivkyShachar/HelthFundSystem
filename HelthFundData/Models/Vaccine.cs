@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace HelthFundData.Models
 {
-    internal class Vaccine
+    public class Vaccine
     {
+        public int Id { get; set; }
+        public int MemberId { get; set; }
+        public string VaccineManufacturer { get; set; }
+        public DateTime VaccineDate { get; set; }
     }
 }
