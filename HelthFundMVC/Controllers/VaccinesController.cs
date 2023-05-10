@@ -13,9 +13,11 @@ namespace HelthFundMVC.Controllers
             _logger = logger;
         }
 
-        public IActionResult AddVaccineGet()
+        public IActionResult AddVaccineGet(int id)
         {
-            return View();
+            var vaccin = new Vaccine();
+            vaccin.MemberId = id;
+            return View(vaccin);
         }
         public async Task<IActionResult> AddVaccinePost(Vaccine vaccine)
         {

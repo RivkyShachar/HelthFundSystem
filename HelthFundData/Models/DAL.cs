@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace HelthFundData.Models
 {
@@ -206,6 +208,18 @@ namespace HelthFundData.Models
         public Response<Recovery> AddRecovery(SqlConnection sqlConnection, Recovery recovery)
         {
             Response<Recovery> Response = new Response<Recovery>();
+
+            // Check the number already has recovery date
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM RECOVERY WHERE Id = " + recovery.Id, sqlConnection);
+            DataTable dt = new DataTable();
+            dataAdapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                Response.StatusCode = 300;
+                Response.StatusMessage = "Member has recovery date";
+                return Response;
+            }
+
             SqlCommand cmd = new SqlCommand("INSERT INTO  RECOVERY(Id, PositiveDate, RecoveryDate) " + "VALUES(" + recovery.Id + ", '" + recovery.PositiveDate + "', '" + recovery.RecoveryDate + "')", sqlConnection);
             sqlConnection.Open();
             int i = cmd.ExecuteNonQuery();
@@ -220,6 +234,48 @@ namespace HelthFundData.Models
                 Response.StatusCode = 100;
                 Response.StatusMessage = "No data inserted"; ;
             }
+            return Response;
+        }
+
+        public Response<string> AmountNotVaccinated(SqlConnection sqlConnection)
+        {
+            Response<string> Response = new Response<string>();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT (SELECT COUNT(*) FROM Members) AS TotalMembers, (SELECT COUNT(*) FROM Members WHERE Id NOT IN (SELECT DISTINCT MemberId FROM Vaccines)) AS NotVaccinated", sqlConnection);
+            DataTable dt = new DataTable();
+            dataAdapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                string TotalMembers = Convert.ToString(dt.Rows[0]["TotalMembers"]);
+                string NotVaccinated = Convert.ToString(dt.Rows[0]["NotVaccinated"]);
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Data found";
+                Response.Single = ""+ NotVaccinated + "/" + TotalMembers + " of the members are not vaccinated at all";
+            }
+            else
+            {
+                // Handle the case when no data is returned
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No data found";
+                Response.Single = null;
+            }
+            return Response;
+        }
+
+        public Response<AmountDate> AmountOfSickMembersInSpecificDate(SqlConnection sqlConnection, DateTime date)
+        {
+            Response<AmountDate> Response = new Response<AmountDate>();
+            AmountDate amountDate = new AmountDate();
+            amountDate.Date = date;
+            SqlCommand command = new SqlCommand(@"SELECT COUNT(*) AS AmountOfSickMembers
+                                         FROM Members m
+                                         INNER JOIN Recovery r ON m.Id = r.Id
+                                         WHERE r.RecoveryDate > @date AND r.PositiveDate <= @date", sqlConnection);
+            command.Parameters.AddWithValue("@date", date);
+            sqlConnection.Open();
+            amountDate.Amount = (int)command.ExecuteScalar();
+            Response.StatusCode = 200;
+            Response.StatusMessage = "Data found";
+            Response.Single = amountDate;
             return Response;
         }
     }

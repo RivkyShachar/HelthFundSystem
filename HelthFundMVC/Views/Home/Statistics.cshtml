@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Statistics";
+}
+
+<h1>Statistics</h1>
+
+<h2>@ViewBag.VaccineStatistics</h2>
+
+<canvas id="myChart" width="400" height="200"></canvas>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        var dates = @Html.Raw(Json.Serialize(ViewBag.Dates));
+        var counts = @Html.Raw(Json.Serialize(ViewBag.Counts));
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Number of Members Sick',
+                    data: counts,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0,
+                        stepSize: 1 // Forces y-axis labels to be whole numbers
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+

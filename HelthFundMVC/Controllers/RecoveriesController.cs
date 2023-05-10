@@ -13,9 +13,11 @@ namespace HelthFundMVC.Controllers
             _logger = logger;
         }
 
-        public IActionResult AddRecoveryGet()
+        public IActionResult AddRecoveryGet(int id)
         {
-            return View();
+            var recovery = new Recovery();
+            recovery.Id = id;
+            return View(recovery);
         }
         public async Task<IActionResult> AddRecoveryPost(Recovery recovery)
         {
@@ -23,7 +25,7 @@ namespace HelthFundMVC.Controllers
             {
                 Id = recovery.Id,
                 PositiveDate = recovery.PositiveDate,
-                RecoveryDate = recovery.RecoveryDate,
+                RecoveryDate = recovery.PositiveDate.AddDays(14),
             };
             if (recovery.Id != null)
             {

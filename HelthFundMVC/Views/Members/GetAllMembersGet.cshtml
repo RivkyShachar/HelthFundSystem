@@ -69,10 +69,10 @@
                     @Html.DisplayFor(modelItem => item.BirthDate)
                 </td>
                 <td>
-                    <a asp-action="AddVaccine" asp-route-id="@item.Id">AddVaccine</a> |
-                    <a asp-action="VaccinesDetails" asp-route-id="@item.Id">View Vaccines</a> |
-                    <a asp-action="AddPositiveDate" asp-route-id="@item.Id">Add Positive Date</a> |
-                    <a asp-action="RecoveryDetails" asp-route-id="@item.Id">View Recovery Details</a>
+                    <a asp-controller="Vaccines" asp-action="AddVaccineGet" asp-route-id="@item.Id">AddVaccine</a> |
+                    <a asp-controller="Vaccines" asp-action="GetVaccinesByIdGet" asp-route-id="@item.Id">View Vaccines</a> |
+                    <a asp-controller="Recoveries" asp-action="AddRecoveryGet" asp-route-id="@item.Id">Add Positive Date</a> |
+                    <a asp-controller="Recoveries" asp-action="GetRecoveryByIdGet" asp-route-id="@item.Id">View Recovery Details</a>
                 </td>
             </tr>
         }
