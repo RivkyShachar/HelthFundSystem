@@ -231,7 +231,7 @@ namespace HelthFundData.Models
                 member.ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7RbuAj7zoRZSIDcV_nz2LyZZjwiOETmn7kg&usqp=CAU";
             }
             SqlCommand cmd = new SqlCommand("INSERT INTO  MEMBERS(Id, FirstName, LastName, Address, PhoneNumber, MobileNumber, BirthDate, ImageUrl) " + "VALUES(" + member.Id + ", '" + member.FirstName + "', '" + member.LastName + "', '" + member.Address + "', '" + member.PhoneNumber +
-                "', '" + member.MobileNumber + "', '" + member.BirthDate + "', '" + member.ImageUrl + "')", sqlConnection);
+                "', '" + member.MobileNumber + "', '" + member.BirthDate.Date.ToString("yyyy-MM-dd") + "', '" + member.ImageUrl + "')", sqlConnection);
             sqlConnection.Open();
             int i = cmd.ExecuteNonQuery();
             sqlConnection.Close();
@@ -281,7 +281,7 @@ namespace HelthFundData.Models
                 return Response;
             }
             SqlCommand cmd = new SqlCommand("SET IDENTITY_INSERT Vaccines ON; INSERT INTO  VACCINES(Id, MemberId, VaccineDate, VaccineManufacturer) " + 
-                "VALUES(" + vaccine.Id + ", " + vaccine.MemberId + ", '" + vaccine.VaccineDate + "', '" + vaccine.VaccineManufacturer + "'); SET IDENTITY_INSERT Vaccines OFF;", sqlConnection);
+                "VALUES(" + vaccine.Id + ", " + vaccine.MemberId + ", '" + vaccine.VaccineDate.Date.ToString("yyyy-MM-dd") + "', '" + vaccine.VaccineManufacturer + "'); SET IDENTITY_INSERT Vaccines OFF;", sqlConnection);
             sqlConnection.Open();
             int i = cmd.ExecuteNonQuery();
             sqlConnection.Close();
@@ -328,7 +328,7 @@ namespace HelthFundData.Models
                 return Response;
             }
 
-            SqlCommand cmd = new SqlCommand("INSERT INTO  RECOVERY(Id, PositiveDate, RecoveryDate) " + "VALUES(" + recovery.Id + ", '" + recovery.PositiveDate + "', '" + recovery.RecoveryDate + "')", sqlConnection);
+            SqlCommand cmd = new SqlCommand("INSERT INTO  RECOVERY(Id, PositiveDate, RecoveryDate) " + "VALUES(" + recovery.Id + ", '" + recovery.PositiveDate.Date.ToString("yyyy-MM-dd") + "', '" + recovery.RecoveryDate.Date.ToString("yyyy-MM-dd") + "')", sqlConnection);
             sqlConnection.Open();
             int i = cmd.ExecuteNonQuery();
             sqlConnection.Close();
