@@ -21,8 +21,6 @@ namespace HelthFundMVC.Controllers
         {
             return View();
         }
-
-
         public async Task<IActionResult> Statistics()
         {
             List<AmountDate> amountDates = new List<AmountDate>();
