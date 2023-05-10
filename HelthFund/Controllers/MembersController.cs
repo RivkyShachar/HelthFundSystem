@@ -1,5 +1,4 @@
 ﻿using HelthFundData.Models;
-using HelthFundData.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
