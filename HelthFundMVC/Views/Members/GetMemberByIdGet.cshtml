@@ -77,10 +77,10 @@
                     @Html.DisplayFor(modelItem => Model.BirthDate)
                 </td>
                 <td>
-                    <a asp-action="AddVaccineGet" asp-route-id="@Model.Id">AddVaccine</a> |
-                <a asp-action="AddVaccineGet" asp-route-id="@Model.Id">View Vaccines</a> |
-                <a asp-action="AddRecoveryGet" asp-route-id="@Model.Id">Add Positive Date</a> |
-                <a asp-action="AddRecoveryGet" asp-route-id="@Model.Id">View Recovery Details</a>
+                    <a asp-controller="Vaccines" asp-action="AddVaccineGet" asp-route-id="@Model.Id">Add Vaccine</a> |
+                    <a asp-controller="Vaccines" asp-action="GetVaccinesByIdGet" asp-route-id="@Model.Id">View Vaccines</a> |
+                    <a asp-controller="Recoveries" asp-action="AddRecoveryGet" asp-route-id="@Model.Id">Add Positive Date</a> |
+                    <a asp-controller="Recoveries" asp-action="GetRecoveryByIdGet" asp-route-id="@Model.Id">View Recovery Details</a>
             </td>
             }
         </tr>

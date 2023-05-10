@@ -3,10 +3,11 @@
     ViewData["Title"] = "GetAllVaccinesGet";
 }
 
-<h1>GetAllVaccinesGet</h1>
+<h1>All Vaccines</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a href="@Url.Action("AddMemberGet", "Members")" class="btn btn-primary">Add new member</a>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Home page</a>
 </p>
 <table class="table">
     <thead>
@@ -37,8 +38,11 @@
                     @Html.DisplayFor(modelItem => item.VaccineDate)
                 </td>
                 <td>
-                    <a asp-action="AllMembers" asp-route-id="@item.Id">back</a>
-                </td>
+                    <a asp-controller="Vaccines" asp-action="AddVaccineGet" asp-route-id="@item.Id">Add Vaccine</a> |
+                    <a asp-controller="Vaccines" asp-action="GetVaccinesByIdGet" asp-route-id="@item.Id">View Vaccines</a> |
+                    <a asp-controller="Recoveries" asp-action="AddRecoveryGet" asp-route-id="@item.Id">Add Positive Date</a> |
+					<a asp-controller="Recoveries" asp-action="GetRecoveryByIdGet" asp-route-id="@item.Id">View Recovery Details</a>
+				</td>
             </tr>
         }
     </tbody>

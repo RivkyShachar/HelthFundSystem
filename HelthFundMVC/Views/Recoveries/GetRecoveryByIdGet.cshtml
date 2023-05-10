@@ -7,7 +7,6 @@
 <h1>Recovery Details</h1>
 
 <div>
-    <h4>Recovery</h4>
     <hr />
     <dl class="row">
         @if(Model.Id!=0)
@@ -32,6 +31,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="AllMembersGet">Back to List</a>
+    <a href="@Url.Action("GetAllMembersGet", "Members")" class="btn btn-primary">Back to list</a>
 </div>
 
