@@ -14,6 +14,8 @@
 <table class="table">
     <thead>
         <tr>
+            @if(Model.Id!=0)
+            {
             <th>
                 @Html.DisplayNameFor(model => model.ImageUrl)
             </th>
@@ -39,40 +41,48 @@
                 @Html.DisplayNameFor(model => model.BirthDate)
             </th>
             <th></th>
+            }
+            else
+            {
+                <h4>No data exists</h4>
+            }
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>
-                <img src="@Model.ImageUrl" class="member-image" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.MobileNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => Model.BirthDate)
-            </td>
-            <td>
-                <a asp-action="AddVaccineGet" asp-route-id="@Model.Id">AddVaccine</a> |
+            @if (Model.Id != 0)
+            {
+                <td>
+                    <img src="@Model.ImageUrl" class="member-image" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.MobileNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.BirthDate)
+                </td>
+                <td>
+                    <a asp-action="AddVaccineGet" asp-route-id="@Model.Id">AddVaccine</a> |
                 <a asp-action="AddVaccineGet" asp-route-id="@Model.Id">View Vaccines</a> |
                 <a asp-action="AddRecoveryGet" asp-route-id="@Model.Id">Add Positive Date</a> |
                 <a asp-action="AddRecoveryGet" asp-route-id="@Model.Id">View Recovery Details</a>
             </td>
+            }
         </tr>
     </tbody>
 </table>

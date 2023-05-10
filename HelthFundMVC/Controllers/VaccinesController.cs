@@ -1,5 +1,7 @@
 ﻿using HelthFundData.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Reflection.PortableExecutable;
 
 namespace HelthFundMVC.Controllers
 {
@@ -11,6 +13,59 @@ namespace HelthFundMVC.Controllers
         public VaccinesController(ILogger<VaccinesController> logger)
         {
             _logger = logger;
+        }
+
+        public async Task<IActionResult> GetAllVaccinesGet()
+        {
+            List<Vaccine> vaccines = new List<Vaccine>();
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(baseURL);
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await httpClient.GetAsync("/api/Vaccines/GetAllVaccines");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    String results = await response.Content.ReadAsStringAsync();
+                    var json = JObject.Parse(results);
+                    var vaccineList = json["singleList"].ToObject<List<Vaccine>>();
+                    vaccines = vaccineList ?? new List<Vaccine>();
+                }
+                else
+                {
+                    Console.WriteLine("Error calling web API");
+                }
+                ViewData.Model = vaccines;
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> GetVaccinesByIdGet(int id)
+        {
+            List<Vaccine> vaccines = new List<Vaccine>();
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(baseURL);
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var response = await httpClient.GetAsync("/api/Vaccines/GetVaccinesById/" + id);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    String results = await response.Content.ReadAsStringAsync();
+                    var json = JObject.Parse(results);
+                    var vaccineList = json["singleList"].ToObject<List<Vaccine>>();
+                    vaccines = vaccineList ?? new List<Vaccine>();
+                }
+                else
+                {
+                    Console.WriteLine("Error calling web API");
+                }
+                ViewData.Model = vaccines;
+
+            }
+            return View();
         }
 
         public IActionResult AddVaccineGet(int id)

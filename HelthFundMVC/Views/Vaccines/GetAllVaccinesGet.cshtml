@@ -1,0 +1,46 @@
+﻿@model IEnumerable<HelthFundData.Models.Vaccine>
+@{
+    ViewData["Title"] = "GetAllVaccinesGet";
+}
+
+<h1>GetAllVaccinesGet</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VaccineManufacturer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VaccineDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MemberId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VaccineManufacturer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VaccineDate)
+                </td>
+                <td>
+                    <a asp-action="AllMembers" asp-route-id="@item.Id">back</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
