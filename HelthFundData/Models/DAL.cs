@@ -15,7 +15,7 @@ namespace HelthFundData.Models
     {
         public Response<Member> GetAllMembers(SqlConnection sqlConnection)
         {
-            Response<Member> memberResponse = new Response<Member>();
+            Response<Member> Response = new Response<Member>();
             SqlDataAdapter dataAdapter= new SqlDataAdapter("SELECT * FROM MEMBERS",sqlConnection);
             DataTable dt = new DataTable();
             List<Member> lstMembers= new List<Member>();
@@ -38,110 +38,22 @@ namespace HelthFundData.Models
             }
             if(lstMembers.Count>0) 
             { 
-                memberResponse.StatusCode= 200;
-                memberResponse.StatusMessage = "Data found";
-                memberResponse.SingleList = lstMembers;
-            }
-            else
-            {
-                memberResponse.StatusCode = 100;
-                memberResponse.StatusMessage = "Data not found";
-                memberResponse.SingleList = null;
-            }
-            return memberResponse; 
-        }
-
-        public Response<Member> GetMemberById(SqlConnection sqlConnection, int id)
-        {
-            Response<Member> memberResponse = new Response<Member>();
-            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS WHERE ID = "+id, sqlConnection);
-            DataTable dt = new DataTable();
-            dataAdapter.Fill(dt);
-            if (dt.Rows.Count > 0)
-            {
-                Member member = new Member();
-                member.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
-                member.FirstName = Convert.ToString(dt.Rows[0]["FirstName"]);
-                member.LastName = Convert.ToString(dt.Rows[0]["LastName"]);
-                member.Address = Convert.ToString(dt.Rows[0]["Address"]);
-                member.PhoneNumber = Convert.ToString(dt.Rows[0]["PhoneNumber"]);
-                member.MobileNumber = Convert.ToString(dt.Rows[0]["MobileNumber"]);
-                member.BirthDate = Convert.ToDateTime(dt.Rows[0]["BirthDate"]);
-                member.ImageUrl = Convert.ToString(dt.Rows[0]["ImageUrl"]);
-                memberResponse.StatusCode = 200;
-                memberResponse.StatusMessage = "Data found";
-                memberResponse.Single = member;
-            }
-            else
-            {
-                memberResponse.StatusCode = 100;
-                memberResponse.StatusMessage = "Data not found";
-                memberResponse.Single = null;
-            }
-            return memberResponse;
-        }
-
-        public Response<Member> AddMember(SqlConnection sqlConnection, Member member)
-        {
-            Response<Member> Response = new Response<Member>();
-            Response<Member> getMemById = new Response<Member>();
-            getMemById = GetMemberById(sqlConnection, member.Id);
-            if(getMemById != null && getMemById.StatusMessage == "Data found")
-            {
-                Response.StatusCode = 400;
-                Response.StatusMessage = "This id is already exist, no data inserted";
-                return Response;
-            }
-            if (member.ImageUrl == null || member.ImageUrl == "")
-            {
-                member.ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7RbuAj7zoRZSIDcV_nz2LyZZjwiOETmn7kg&usqp=CAU";
-            }
-            SqlCommand cmd = new SqlCommand("INSERT INTO  MEMBERS(Id, FirstName, LastName, Address, PhoneNumber, MobileNumber, BirthDate, ImageUrl) " + "VALUES(" + member.Id + ", '" + member.FirstName + "', '" + member.LastName + "', '" + member.Address + "', '" + member.PhoneNumber +
-                "', '" + member.MobileNumber + "', '" + member.BirthDate + "', '" + member.ImageUrl + "')", sqlConnection);
-            sqlConnection.Open();
-            int i = cmd.ExecuteNonQuery();
-            sqlConnection.Close();
-            if (i > 0)
-            {
-                Response.StatusCode = 200;
-                Response.StatusMessage = "Member added";
-            }
-            else
-            {
-                Response.StatusCode = 100;
-                Response.StatusMessage = "No data inserted";
-            }
-            return Response;
-        }
-
-        public Response<Recovery> GetRecoveryById(SqlConnection sqlConnection, int id)
-        {
-            Response<Recovery> Response = new Response<Recovery>();
-            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM RECOVERY WHERE ID = " + id, sqlConnection);
-            DataTable dt = new DataTable();
-            dataAdapter.Fill(dt);
-            if (dt.Rows.Count > 0)
-            {
-                Recovery recovery = new Recovery();
-                recovery.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
-                recovery.PositiveDate = Convert.ToDateTime(dt.Rows[0]["PositiveDate"]);
-                Response.StatusCode = 200;
+                Response.StatusCode= 200;
                 Response.StatusMessage = "Data found";
-                Response.Single = recovery;
+                Response.SingleList = lstMembers;
             }
             else
             {
                 Response.StatusCode = 100;
                 Response.StatusMessage = "Data not found";
-                Response.Single = null;
+                Response.SingleList = null;
             }
-            return Response;
+            return Response; 
         }
-
-        public Response<Vaccine> GetVaccinesById(SqlConnection sqlConnection, int id)
+        public Response<Vaccine> GetAllVaccines(SqlConnection sqlConnection)
         {
             Response<Vaccine> Response = new Response<Vaccine>();
-            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM VACCINES WHERE MemberId = "+id, sqlConnection);
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Vaccines", sqlConnection);
             DataTable dt = new DataTable();
             List<Vaccine> lstVaccines = new List<Vaccine>();
             dataAdapter.Fill(dt);
@@ -171,7 +83,159 @@ namespace HelthFundData.Models
             }
             return Response;
         }
+        public Response<Recovery> GetAllRecoveries(SqlConnection sqlConnection)
+        {
+            Response<Recovery> Response = new Response<Recovery>();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM RECOVERY", sqlConnection);
+            DataTable dt = new DataTable();
+            List<Recovery> lstRecoveries = new List<Recovery>();
+            dataAdapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Recovery recovery = new Recovery();
+                    recovery.Id = Convert.ToInt32(dt.Rows[i]["Id"]);
+                    recovery.PositiveDate = Convert.ToDateTime(dt.Rows[i]["PositiveDate"]);
+                    recovery.RecoveryDate = Convert.ToDateTime(dt.Rows[i]["RecoveryDate"]);
+                    lstRecoveries.Add(recovery);
+                }
+            }
+            if(lstRecoveries.Count>0)
+            {
 
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Data found";
+                Response.SingleList = lstRecoveries;
+            }
+            else
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "Data not found";
+                Response.SingleList = null;
+            }
+            return Response;
+        }
+
+
+        public Response<Member> GetMemberById(SqlConnection sqlConnection, int id)
+        {
+            Response<Member> memberResponse = new Response<Member>();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS WHERE ID = "+id, sqlConnection);
+            DataTable dt = new DataTable();
+            dataAdapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                Member member = new Member();
+                member.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
+                member.FirstName = Convert.ToString(dt.Rows[0]["FirstName"]).DefaultIfEmpty;
+                member.LastName = Convert.ToString(dt.Rows[0]["LastName"]);
+                member.Address = Convert.ToString(dt.Rows[0]["Address"]);
+                member.PhoneNumber = Convert.ToString(dt.Rows[0]["PhoneNumber"]);
+                member.MobileNumber = Convert.ToString(dt.Rows[0]["MobileNumber"]);
+                member.BirthDate = Convert.ToDateTime(dt.Rows[0]["BirthDate"]);
+                member.ImageUrl = Convert.ToString(dt.Rows[0]["ImageUrl"]);
+                memberResponse.StatusCode = 200;
+                memberResponse.StatusMessage = "Data found";
+                memberResponse.Single = member;
+            }
+            else
+            {
+                memberResponse.StatusCode = 100;
+                memberResponse.StatusMessage = "Data not found";
+                memberResponse.Single = null;
+            }
+            return memberResponse;
+        }
+        public Response<Vaccine> GetVaccinesById(SqlConnection sqlConnection, int id)
+        {
+            Response<Vaccine> Response = new Response<Vaccine>();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM VACCINES WHERE MemberId = " + id, sqlConnection);
+            DataTable dt = new DataTable();
+            List<Vaccine> lstVaccines = new List<Vaccine>();
+            dataAdapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Vaccine vaccine = new Vaccine();
+                    vaccine.Id = Convert.ToInt32(dt.Rows[i]["Id"]);
+                    vaccine.MemberId = Convert.ToInt32(dt.Rows[i]["MemberId"]);
+                    vaccine.VaccineDate = Convert.ToDateTime(dt.Rows[i]["VaccineDate"]);
+                    vaccine.VaccineManufacturer = Convert.ToString(dt.Rows[i]["VaccineManufacturer"]);
+                    lstVaccines.Add(vaccine);
+                }
+            }
+            if (lstVaccines.Count > 0)
+            {
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Data found";
+                Response.SingleList = lstVaccines;
+            }
+            else
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "Data not found";
+                Response.SingleList = null;
+            }
+            return Response;
+        }
+        public Response<Recovery> GetRecoveryById(SqlConnection sqlConnection, int id)
+        {
+            Response<Recovery> Response = new Response<Recovery>();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM RECOVERY WHERE ID = " + id, sqlConnection);
+            DataTable dt = new DataTable();
+            dataAdapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                Recovery recovery = new Recovery();
+                recovery.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
+                recovery.PositiveDate = Convert.ToDateTime(dt.Rows[0]["PositiveDate"]);
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Data found";
+                Response.Single = recovery;
+            }
+            else
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "Data not found";
+                Response.Single = null;
+            }
+            return Response;
+        }
+
+        public Response<Member> AddMember(SqlConnection sqlConnection, Member member)
+        {
+            Response<Member> Response = new Response<Member>();
+            Response<Member> getMemById = new Response<Member>();
+            getMemById = GetMemberById(sqlConnection, member.Id);
+            if (getMemById != null && getMemById.StatusMessage == "Data found")
+            {
+                Response.StatusCode = 400;
+                Response.StatusMessage = "This id is already exist, no data inserted";
+                return Response;
+            }
+            if (member.ImageUrl == null || member.ImageUrl == "")
+            {
+                member.ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7RbuAj7zoRZSIDcV_nz2LyZZjwiOETmn7kg&usqp=CAU";
+            }
+            SqlCommand cmd = new SqlCommand("INSERT INTO  MEMBERS(Id, FirstName, LastName, Address, PhoneNumber, MobileNumber, BirthDate, ImageUrl) " + "VALUES(" + member.Id + ", '" + member.FirstName + "', '" + member.LastName + "', '" + member.Address + "', '" + member.PhoneNumber +
+                "', '" + member.MobileNumber + "', '" + member.BirthDate + "', '" + member.ImageUrl + "')", sqlConnection);
+            sqlConnection.Open();
+            int i = cmd.ExecuteNonQuery();
+            sqlConnection.Close();
+            if (i > 0)
+            {
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Member added";
+            }
+            else
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No data inserted";
+            }
+            return Response;
+        }
         public Response<Vaccine> AddVaccine(SqlConnection sqlConnection, Vaccine vaccine)
         {
             Response<Vaccine> Response = new Response<Vaccine>();
@@ -204,7 +268,6 @@ namespace HelthFundData.Models
             }
             return Response;
         }
-
         public Response<Recovery> AddRecovery(SqlConnection sqlConnection, Recovery recovery)
         {
             Response<Recovery> Response = new Response<Recovery>();

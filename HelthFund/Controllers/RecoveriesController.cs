@@ -16,6 +16,18 @@ namespace HelthFundAPI.Controllers
             _configuration = configuration;
         }
 
+        // GET api/Recoveries/GetAllRecoveries
+        [HttpGet]
+        [Route("GetAllRecoveries")]
+        public Response<Recovery> GetAllRecoveries()
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
+            Response<Recovery> Response = new Response<Recovery>();
+            DAL dal = new DAL();
+            Response = dal.GetAllRecoveries(sqlConnection);
+            return Response;
+        }
+
         // GET api/Recoveries/GetRecoveryById/{id}
         [HttpGet]
         [Route("GetRecoveryById/{id}")]

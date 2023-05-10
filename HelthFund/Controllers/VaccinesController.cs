@@ -16,7 +16,19 @@ namespace HelthFundAPI.Controllers
             _configuration = configuration;
         }
 
-        // GET api/Members/GetVaccinesById/{id}
+        // GET api/Vaccines/GetAllVaccines
+        [HttpGet]
+        [Route("GetAllVaccines")]
+        public Response<Vaccine> GetAllVaccines()
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
+            Response<Vaccine> Response = new Response<Vaccine>();
+            DAL dal = new DAL();
+            Response = dal.GetAllVaccines(sqlConnection);
+            return Response;
+        }
+
+        // GET api/Vaccines/GetVaccinesById/{id}
         [HttpGet]
         [Route("GetVaccinesById/{id}")]
         public Response<Vaccine> GetVaccinesById(int id)
