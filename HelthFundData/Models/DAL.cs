@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Reflection.PortableExecutable;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -280,8 +281,8 @@ namespace HelthFundData.Models
                 Response.StatusMessage = "Maximum number of vaccines reached for the member";
                 return Response;
             }
-            SqlCommand cmd = new SqlCommand("SET IDENTITY_INSERT Vaccines ON; INSERT INTO  VACCINES(Id, MemberId, VaccineDate, VaccineManufacturer) " + 
-                "VALUES(" + vaccine.Id + ", " + vaccine.MemberId + ", '" + vaccine.VaccineDate.Date.ToString("yyyy-MM-dd") + "', '" + vaccine.VaccineManufacturer + "'); SET IDENTITY_INSERT Vaccines OFF;", sqlConnection);
+            SqlCommand cmd = new SqlCommand("INSERT INTO  VACCINES(MemberId, VaccineDate, VaccineManufacturer) " + 
+                "VALUES(" + vaccine.MemberId + ", '" + vaccine.VaccineDate.Date.ToString("yyyy-MM-dd") + "', '" + vaccine.VaccineManufacturer + "');", sqlConnection);
             sqlConnection.Open();
             int i = cmd.ExecuteNonQuery();
             sqlConnection.Close();

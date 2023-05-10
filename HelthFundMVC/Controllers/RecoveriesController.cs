@@ -41,26 +41,28 @@ namespace HelthFundMVC.Controllers
 
         public async Task<IActionResult> GetRecoveryByIdGet(int id)
         {
-            Recovery recovery = new Recovery();
+            
             using (var httpClient = new HttpClient())
             {
                 httpClient.BaseAddress = new Uri(baseURL);
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                var response = await httpClient.GetAsync("/api/Recoveries/GetRecoveryByIdGet/" + id);
+                var response = await httpClient.GetAsync("/api/Recoveries/GetRecoveryById/" + id);
 
                 if (response.IsSuccessStatusCode)
                 {
+                    Recovery recovery = new Recovery();
                     String results = await response.Content.ReadAsStringAsync();
                     var json = JObject.Parse(results);
                     var recoveryGet = json["single"].ToObject<Recovery>();
                     recovery = recoveryGet ?? new Recovery();
+                    ViewData.Model = recovery;
                 }
                 else
                 {
                     Console.WriteLine("Error calling web API");
                 }
-                ViewData.Model = recovery;
+                
             }
             return View();
         }

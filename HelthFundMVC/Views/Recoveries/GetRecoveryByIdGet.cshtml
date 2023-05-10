@@ -1,5 +1,37 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model HelthFundData.Models.Recovery
+
 @{
+    ViewData["Title"] = "RecoveryDetails";
 }
+
+<h1>Recovery Details</h1>
+
+<div>
+    <h4>Recovery</h4>
+    <hr />
+    <dl class="row">
+        @if(Model.Id!=0)
+        {
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PositiveDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PositiveDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RecoveryDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RecoveryDate)
+		</dd>
+		}
+        else
+        {
+            <h4>No data exists</h4>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="AllMembersGet">Back to List</a>
+</div>
+

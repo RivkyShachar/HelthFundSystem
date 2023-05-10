@@ -1,5 +1,57 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<HelthFundData.Models.Recovery>
+
 @{
+    ViewData["Title"] = "GetAllRecoveries";
 }
+
+<h1>All Members</h1>
+
+<p>
+    <a href="@Url.Action("AddMemberGet", "Members")" class="btn btn-primary">Add new member</a>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Home page</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PositiveDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecoveryDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PositiveDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecoveryDate)
+                </td>
+                <td>
+                    <a asp-controller="Vaccines" asp-action="AddVaccineGet" asp-route-id="@item.Id">AddVaccine</a> |
+                    <a asp-controller="Vaccines" asp-action="GetVaccinesByIdGet" asp-route-id="@item.Id">View Vaccines</a> |
+                    <a asp-controller="Recoveries" asp-action="AddRecoveryGet" asp-route-id="@item.Id">Add Positive Date</a> |
+                    <a asp-controller="Recoveries" asp-action="GetRecoveryByIdGet" asp-route-id="@item.Id">View Recovery Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    .member-image {
+        max-width: 100px; /* Adjust the maximum width as per your requirement */
+        height: auto;
+    }
+</style>
