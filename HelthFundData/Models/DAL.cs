@@ -81,11 +81,19 @@ namespace HelthFundData.Models
 
         public Response<Member> AddMember(SqlConnection sqlConnection, Member member)
         {
-            if (member.ImageUrl == null)
+            Response<Member> Response = new Response<Member>();
+            Response<Member> getMemById = new Response<Member>();
+            getMemById = GetMemberById(sqlConnection, member.Id);
+            if(getMemById != null && getMemById.StatusMessage == "Data found")
+            {
+                Response.StatusCode = 400;
+                Response.StatusMessage = "This id is already exist, no data inserted";
+                return Response;
+            }
+            if (member.ImageUrl == null || member.ImageUrl == "")
             {
                 member.ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7RbuAj7zoRZSIDcV_nz2LyZZjwiOETmn7kg&usqp=CAU";
             }
-            Response<Member> memberResponse = new Response<Member>();
             SqlCommand cmd = new SqlCommand("INSERT INTO  MEMBERS(Id, FirstName, LastName, Address, PhoneNumber, MobileNumber, BirthDate, ImageUrl) " + "VALUES(" + member.Id + ", '" + member.FirstName + "', '" + member.LastName + "', '" + member.Address + "', '" + member.PhoneNumber +
                 "', '" + member.MobileNumber + "', '" + member.BirthDate + "', '" + member.ImageUrl + "')", sqlConnection);
             sqlConnection.Open();
@@ -93,15 +101,15 @@ namespace HelthFundData.Models
             sqlConnection.Close();
             if (i > 0)
             {
-                memberResponse.StatusCode = 200;
-                memberResponse.StatusMessage = "Member added";
+                Response.StatusCode = 200;
+                Response.StatusMessage = "Member added";
             }
             else
             {
-                memberResponse.StatusCode = 100;
-                memberResponse.StatusMessage = "No data inserted";;
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No data inserted";
             }
-            return memberResponse;
+            return Response;
         }
 
         public Response<Recovery> GetRecoveryById(SqlConnection sqlConnection, int id)
