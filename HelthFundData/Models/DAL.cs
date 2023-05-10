@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -128,7 +129,7 @@ namespace HelthFundData.Models
             {
                 Member member = new Member();
                 member.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
-                member.FirstName = Convert.ToString(dt.Rows[0]["FirstName"]).DefaultIfEmpty;
+                member.FirstName = Convert.ToString(dt.Rows[0]["FirstName"]);
                 member.LastName = Convert.ToString(dt.Rows[0]["LastName"]);
                 member.Address = Convert.ToString(dt.Rows[0]["Address"]);
                 member.PhoneNumber = Convert.ToString(dt.Rows[0]["PhoneNumber"]);
@@ -207,14 +208,24 @@ namespace HelthFundData.Models
         public Response<Member> AddMember(SqlConnection sqlConnection, Member member)
         {
             Response<Member> Response = new Response<Member>();
+            DateTime today = DateTime.Today;
+            //chech if birth date is before today
+            if (member.BirthDate > today)
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No data inserted - birthDate error";
+                return Response;
+            }
+            //check if member already exists
             Response<Member> getMemById = new Response<Member>();
             getMemById = GetMemberById(sqlConnection, member.Id);
             if (getMemById != null && getMemById.StatusMessage == "Data found")
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = 405;
                 Response.StatusMessage = "This id is already exist, no data inserted";
                 return Response;
             }
+            //set default image
             if (member.ImageUrl == null || member.ImageUrl == "")
             {
                 member.ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7RbuAj7zoRZSIDcV_nz2LyZZjwiOETmn7kg&usqp=CAU";
@@ -239,6 +250,24 @@ namespace HelthFundData.Models
         public Response<Vaccine> AddVaccine(SqlConnection sqlConnection, Vaccine vaccine)
         {
             Response<Vaccine> Response = new Response<Vaccine>();
+            Response<Member> getMemById = new Response<Member>();
+            Response<Vaccine> getVacById = new Response<Vaccine>();
+            getMemById = GetMemberById(sqlConnection, vaccine.MemberId);
+            getVacById = GetVaccinesById(sqlConnection, vaccine.Id);
+            //check if the member id is correct
+            if (getMemById == null && getMemById.StatusCode != 200)
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No member with this id exists, no data inserted";
+                return Response;
+            }
+            //check if id already exists
+            if (getVacById.StatusCode == 200)
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "This id is already exists, no data inserted";
+                return Response;
+            }
 
             // Check the number of vaccines associated with the member
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM VACCINES WHERE MemberId = " + vaccine.MemberId, sqlConnection);
@@ -247,7 +276,7 @@ namespace HelthFundData.Models
 
             if (dt.Rows.Count >= 4)
             {
-                Response.StatusCode = 300;
+                Response.StatusCode = 100;
                 Response.StatusMessage = "Maximum number of vaccines reached for the member";
                 return Response;
             }
@@ -270,15 +299,31 @@ namespace HelthFundData.Models
         }
         public Response<Recovery> AddRecovery(SqlConnection sqlConnection, Recovery recovery)
         {
+            DateTime today = DateTime.Now;
             Response<Recovery> Response = new Response<Recovery>();
-
+            Response<Member> getMemById = new Response<Member>();
+            getMemById = GetMemberById(sqlConnection, recovery.Id);
+            //chech if positive date is before recovery
+            if(recovery.RecoveryDate < recovery.PositiveDate || recovery.PositiveDate > today)
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "dates error, no data inserted";
+                return Response;
+            }
+            //check if the member id is correct
+            if (getMemById == null && getMemById.StatusCode != 200)
+            {
+                Response.StatusCode = 100;
+                Response.StatusMessage = "No member with this id exists, no data inserted";
+                return Response;
+            }
             // Check the number already has recovery date
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM RECOVERY WHERE Id = " + recovery.Id, sqlConnection);
             DataTable dt = new DataTable();
             dataAdapter.Fill(dt);
             if (dt.Rows.Count > 0)
             {
-                Response.StatusCode = 300;
+                Response.StatusCode = 100;
                 Response.StatusMessage = "Member has recovery date";
                 return Response;
             }
