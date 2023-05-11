@@ -2,7 +2,6 @@
 using HelthFundData.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 namespace HelthFundAPI.Controllers
 {
@@ -22,10 +21,9 @@ namespace HelthFundAPI.Controllers
         [Route("AmountNotVaccinated")]
         public Response<string> AmountNotVaccinated()
         {
-            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<string> Response = new Response<string>();
-            Dal dal = new Dal();
-            Response = dal.AmountNotVaccinated(sqlConnection);
+            Dal dal = new Dal(_configuration);
+            Response = dal.AmountNotVaccinated();
             return Response;
         }
 
@@ -34,10 +32,9 @@ namespace HelthFundAPI.Controllers
         [Route("AmountOfSickMembersInSpecificDate/{date}")]
         public Response<AmountDate> AmountOfSickMembersInSpecificDate(DateTime date)
         {
-            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<AmountDate> Response = new Response<AmountDate>();
-            Dal dal = new Dal();
-            Response = dal.AmountOfSickMembersInSpecificDate(sqlConnection, date);
+            Dal dal = new Dal(_configuration);
+            Response = dal.AmountOfSickMembersInSpecificDate(date);
             return Response;
         }
 

@@ -1,9 +1,7 @@
 ﻿using HelthFundData.DAL;
 using HelthFundData.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
+
 
 namespace HelthFundAPI.Controllers
 {
@@ -23,10 +21,9 @@ namespace HelthFundAPI.Controllers
         [Route("GetAllMembers")]
         public Response<Member> GetAllMembers()
         {
-            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Member> memberResponse = new Response<Member>();
-            Dal dal = new Dal();
-            memberResponse = dal.GetAllMembers(sqlConnection);
+            Dal dal = new Dal(_configuration);
+            memberResponse = dal.GetAllMembers();
             return memberResponse;
         }
 
@@ -35,10 +32,9 @@ namespace HelthFundAPI.Controllers
         [Route("GetMemberById/{id}")]
         public Response<Member> GetMemberById(int id)
         {
-            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Member> memberResponse = new Response<Member>();
-            Dal dal = new Dal();
-            memberResponse = dal.GetMemberById(sqlConnection, id);
+            Dal dal = new Dal(_configuration);
+            memberResponse = dal.GetMemberById(id);
             return memberResponse;
         }
 
@@ -47,10 +43,9 @@ namespace HelthFundAPI.Controllers
         [Route("AddMember")]
         public Response<Member> AddMember(Member member)
         {
-            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Member> memberResponse = new Response<Member>();
-            Dal dal = new Dal();
-            memberResponse = dal.AddMember(sqlConnection, member);
+            Dal dal = new Dal(_configuration);
+            memberResponse = dal.AddMember(member);
             return memberResponse;
         }
 

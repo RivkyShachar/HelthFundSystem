@@ -1,5 +1,6 @@
 ﻿using HelthFundData.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 
 
@@ -7,8 +8,15 @@ namespace HelthFundData.DAL
 {
     public class Dal
     {
-        public Response<Member> GetAllMembers(SqlConnection sqlConnection)
+        private readonly IConfiguration _configuration;
+
+        public Dal(IConfiguration configuration)
         {
+            _configuration = configuration;
+        }
+        public Response<Member> GetAllMembers()
+        {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Member> Response = new Response<Member>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS", sqlConnection);
             DataTable dt = new DataTable();
@@ -44,8 +52,9 @@ namespace HelthFundData.DAL
             }
             return Response;
         }
-        public Models.Response<Vaccine> GetAllVaccines(SqlConnection sqlConnection)
+        public Response<Vaccine> GetAllVaccines()
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Vaccine> Response = new Response<Vaccine>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Vaccines", sqlConnection);
             DataTable dt = new DataTable();
@@ -77,8 +86,9 @@ namespace HelthFundData.DAL
             }
             return Response;
         }
-        public Response<Recovery> GetAllRecoveries(SqlConnection sqlConnection)
+        public Response<Recovery> GetAllRecoveries()
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Recovery> Response = new Response<Recovery>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM RECOVERY", sqlConnection);
             DataTable dt = new DataTable();
@@ -112,8 +122,9 @@ namespace HelthFundData.DAL
         }
 
 
-        public Response<Member> GetMemberById(SqlConnection sqlConnection, int id)
+        public Response<Member> GetMemberById(int id)
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Member> memberResponse = new Response<Member>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS WHERE ID = " + id, sqlConnection);
             DataTable dt = new DataTable();
@@ -141,8 +152,9 @@ namespace HelthFundData.DAL
             }
             return memberResponse;
         }
-        public Response<Vaccine> GetVaccinesById(SqlConnection sqlConnection, int id)
+        public Response<Vaccine> GetVaccinesById(int id)
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Vaccine> Response = new Response<Vaccine>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM VACCINES WHERE MemberId = " + id, sqlConnection);
             DataTable dt = new DataTable();
@@ -174,8 +186,9 @@ namespace HelthFundData.DAL
             }
             return Response;
         }
-        public Response<Recovery> GetRecoveryById(SqlConnection sqlConnection, int id)
+        public Response<Recovery> GetRecoveryById(int id)
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Recovery> Response = new Response<Recovery>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM RECOVERY WHERE ID = " + id, sqlConnection);
             DataTable dt = new DataTable();
@@ -198,8 +211,9 @@ namespace HelthFundData.DAL
             return Response;
         }
 
-        public Response<Member> AddMember(SqlConnection sqlConnection, Member member)
+        public Response<Member> AddMember(Member member)
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Member> Response = new Response<Member>();
             DateTime today = DateTime.Today;
             //chech if birth date is before today
@@ -211,7 +225,7 @@ namespace HelthFundData.DAL
             }
             //check if member already exists
             Response<Member> getMemById = new Response<Member>();
-            getMemById = GetMemberById(sqlConnection, member.Id);
+            getMemById = GetMemberById(member.Id);
             if (getMemById != null && getMemById.StatusMessage == "Data found")
             {
                 Response.StatusCode = 405;
@@ -240,13 +254,14 @@ namespace HelthFundData.DAL
             }
             return Response;
         }
-        public Response<Vaccine> AddVaccine(SqlConnection sqlConnection, Vaccine vaccine)
+        public Response<Vaccine> AddVaccine(Vaccine vaccine)
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Vaccine> Response = new Response<Vaccine>();
             Response<Member> getMemById = new Response<Member>();
             Response<Vaccine> getVacById = new Response<Vaccine>();
-            getMemById = GetMemberById(sqlConnection, vaccine.MemberId);
-            getVacById = GetVaccinesById(sqlConnection, vaccine.Id);
+            getMemById = GetMemberById(vaccine.MemberId);
+            getVacById = GetVaccinesById(vaccine.Id);
             //check if the member id is correct
             if (getMemById == null && getMemById.StatusCode != 200)
             {
@@ -290,12 +305,13 @@ namespace HelthFundData.DAL
             }
             return Response;
         }
-        public Response<Recovery> AddRecovery(SqlConnection sqlConnection, Recovery recovery)
+        public Response<Recovery> AddRecovery(Recovery recovery)
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             DateTime today = DateTime.Now;
             Response<Recovery> Response = new Response<Recovery>();
             Response<Member> getMemById = new Response<Member>();
-            getMemById = GetMemberById(sqlConnection, recovery.Id);
+            getMemById = GetMemberById(recovery.Id);
             //chech if positive date is before recovery
             if (recovery.RecoveryDate < recovery.PositiveDate || recovery.PositiveDate > today)
             {
@@ -338,8 +354,9 @@ namespace HelthFundData.DAL
             return Response;
         }
 
-        public Response<string> AmountNotVaccinated(SqlConnection sqlConnection)
+        public Response<string> AmountNotVaccinated()
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<string> Response = new Response<string>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT (SELECT COUNT(*) FROM Members) AS TotalMembers, (SELECT COUNT(*) FROM Members WHERE Id NOT IN (SELECT DISTINCT MemberId FROM Vaccines)) AS NotVaccinated", sqlConnection);
             DataTable dt = new DataTable();
@@ -362,8 +379,9 @@ namespace HelthFundData.DAL
             return Response;
         }
 
-        public Response<AmountDate> AmountOfSickMembersInSpecificDate(SqlConnection sqlConnection, DateTime date)
+        public Response<AmountDate> AmountOfSickMembersInSpecificDate(DateTime date)
         {
+            SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<AmountDate> Response = new Response<AmountDate>();
             AmountDate amountDate = new AmountDate();
             amountDate.Date = date;
