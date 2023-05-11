@@ -1,4 +1,5 @@
-﻿using HelthFundData.Models;
+﻿using HelthFundData.DAL;
+using HelthFundData.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -23,7 +24,7 @@ namespace HelthFundAPI.Controllers
         {
             SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Vaccine> Response = new Response<Vaccine>();
-            DAL dal = new DAL();
+            Dal dal = new Dal();
             Response = dal.GetAllVaccines(sqlConnection);
             return Response;
         }
@@ -35,7 +36,7 @@ namespace HelthFundAPI.Controllers
         {
             SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Vaccine> Response = new Response<Vaccine>();
-            DAL dal = new DAL();
+            Dal dal = new Dal();
             Response = dal.GetVaccinesById(sqlConnection, id);
             return Response;
         }
@@ -47,7 +48,7 @@ namespace HelthFundAPI.Controllers
         {
             SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Vaccine> Response = new Response<Vaccine>();
-            DAL dal = new DAL();
+            Dal dal = new Dal();
             Response = dal.AddVaccine(sqlConnection, vaccine);
             return Response;
         }

@@ -1,30 +1,22 @@
-﻿using Azure;
+﻿using HelthFundData.Models;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace HelthFundData.Models
+
+namespace HelthFundData.DAL
 {
-    public class DAL
+    public class Dal
     {
         public Response<Member> GetAllMembers(SqlConnection sqlConnection)
         {
             Response<Member> Response = new Response<Member>();
-            SqlDataAdapter dataAdapter= new SqlDataAdapter("SELECT * FROM MEMBERS",sqlConnection);
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS", sqlConnection);
             DataTable dt = new DataTable();
-            List<Member> lstMembers= new List<Member>();
+            List<Member> lstMembers = new List<Member>();
             dataAdapter.Fill(dt);
-            if(dt.Rows.Count>0)
+            if (dt.Rows.Count > 0)
             {
-                for(int i=0; i<dt.Rows.Count; i++)
+                for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     Member member = new Member();
                     member.Id = Convert.ToInt32(dt.Rows[i]["Id"]);
@@ -38,9 +30,9 @@ namespace HelthFundData.Models
                     lstMembers.Add(member);
                 }
             }
-            if(lstMembers.Count>0) 
-            { 
-                Response.StatusCode= 200;
+            if (lstMembers.Count > 0)
+            {
+                Response.StatusCode = 200;
                 Response.StatusMessage = "Data found";
                 Response.SingleList = lstMembers;
             }
@@ -50,9 +42,9 @@ namespace HelthFundData.Models
                 Response.StatusMessage = "Data not found";
                 Response.SingleList = null;
             }
-            return Response; 
+            return Response;
         }
-        public Response<Vaccine> GetAllVaccines(SqlConnection sqlConnection)
+        public Models.Response<Vaccine> GetAllVaccines(SqlConnection sqlConnection)
         {
             Response<Vaccine> Response = new Response<Vaccine>();
             SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Vaccines", sqlConnection);
@@ -103,7 +95,7 @@ namespace HelthFundData.Models
                     lstRecoveries.Add(recovery);
                 }
             }
-            if(lstRecoveries.Count>0)
+            if (lstRecoveries.Count > 0)
             {
 
                 Response.StatusCode = 200;
@@ -123,7 +115,7 @@ namespace HelthFundData.Models
         public Response<Member> GetMemberById(SqlConnection sqlConnection, int id)
         {
             Response<Member> memberResponse = new Response<Member>();
-            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS WHERE ID = "+id, sqlConnection);
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM MEMBERS WHERE ID = " + id, sqlConnection);
             DataTable dt = new DataTable();
             dataAdapter.Fill(dt);
             if (dt.Rows.Count > 0)
@@ -281,7 +273,7 @@ namespace HelthFundData.Models
                 Response.StatusMessage = "Maximum number of vaccines reached for the member";
                 return Response;
             }
-            SqlCommand cmd = new SqlCommand("INSERT INTO  VACCINES(MemberId, VaccineDate, VaccineManufacturer) " + 
+            SqlCommand cmd = new SqlCommand("INSERT INTO  VACCINES(MemberId, VaccineDate, VaccineManufacturer) " +
                 "VALUES(" + vaccine.MemberId + ", '" + vaccine.VaccineDate.Date.ToString("yyyy-MM-dd") + "', '" + vaccine.VaccineManufacturer + "');", sqlConnection);
             sqlConnection.Open();
             int i = cmd.ExecuteNonQuery();
@@ -305,7 +297,7 @@ namespace HelthFundData.Models
             Response<Member> getMemById = new Response<Member>();
             getMemById = GetMemberById(sqlConnection, recovery.Id);
             //chech if positive date is before recovery
-            if(recovery.RecoveryDate < recovery.PositiveDate || recovery.PositiveDate > today)
+            if (recovery.RecoveryDate < recovery.PositiveDate || recovery.PositiveDate > today)
             {
                 Response.StatusCode = 100;
                 Response.StatusMessage = "dates error, no data inserted";
@@ -358,7 +350,7 @@ namespace HelthFundData.Models
                 string NotVaccinated = Convert.ToString(dt.Rows[0]["NotVaccinated"]);
                 Response.StatusCode = 200;
                 Response.StatusMessage = "Data found";
-                Response.Single = ""+ NotVaccinated + "/" + TotalMembers + " of the members are not vaccinated at all";
+                Response.Single = "" + NotVaccinated + "/" + TotalMembers + " of the members are not vaccinated at all";
             }
             else
             {

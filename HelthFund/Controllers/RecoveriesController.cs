@@ -1,4 +1,5 @@
-﻿using HelthFundData.Models;
+﻿using HelthFundData.DAL;
+using HelthFundData.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -23,7 +24,7 @@ namespace HelthFundAPI.Controllers
         {
             SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Recovery> Response = new Response<Recovery>();
-            DAL dal = new DAL();
+            Dal dal = new Dal();
             Response = dal.GetAllRecoveries(sqlConnection);
             return Response;
         }
@@ -35,7 +36,7 @@ namespace HelthFundAPI.Controllers
         {
             SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Recovery> Response = new Response<Recovery>();
-            DAL dal = new DAL();
+            Dal dal = new Dal();
             Response = dal.GetRecoveryById(sqlConnection, id);
             return Response;
         }
@@ -47,7 +48,7 @@ namespace HelthFundAPI.Controllers
         {
             SqlConnection sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection").ToString());
             Response<Recovery> Response = new Response<Recovery>();
-            DAL dal = new DAL();
+            Dal dal = new Dal();
             Response = dal.AddRecovery(sqlConnection, recovery);
             return Response;
         }
