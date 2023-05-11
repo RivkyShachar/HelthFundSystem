@@ -1,11 +1,4 @@
-using HelthFundData.DbContext;
-using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddDbContext<HelthFundDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new
-    InvalidOperationException("Connection string 'DefaultConnection' not found.")));
-
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
